@@ -10,16 +10,25 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const nodemailer = require('nodemailer')
 const smtpTransport = nodemailer.createTransport({
   host: 'smtp.qq.com',
+  secureConnection: true, // use SSL
   port: 465,
   secure: true,
   auth: {
     user: '389057465@qq.com',
-    pass: ''
+    pass: 'mdsblpxpjtkvbjde' // QQ邮箱需要使用授权码
   }
 })
 
+//跨域问题解决方面
+app.all('*',function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+　next();　
+});
+
 app.get('/', (req, res) => {
-  res.render('index')
+  res.send('666')
 })
 
 app.get('/success', (req, res) => {
@@ -27,21 +36,19 @@ app.get('/success', (req, res) => {
 })
 
 app.post('/join', (req, res) => {
-  let { name, qq, age } = req.body
+  console.log(req.body)
+  let { recipient, theme, content } = req.body
 
   const mailOptions = {
     from: '389057465@qq.com',
-    to: '2334430605@qq.com',
-    subject: 'Node-test邮件',
-    html: `
-            <b>姓名：${name}</b>
-            <b>QQ：${qq}</b>
-            <b>年龄：${age}</b>
-          `
+    to: recipient,
+    subject: theme,
+    html: content
   }
 
-  smtpTransport.sendMail(mailOptions, (err, res) => {
+  smtpTransport.sendMail(mailOptions, (err, resp) => {
     if (err) {
+      console.log(err)
       res.send({
         code: 500,
         msg: '错误'
@@ -59,8 +66,10 @@ app.post('/join', (req, res) => {
 /* listen port */
 const http = require('http')
 const server = http.createServer(app)
+const hostname = '127.0.0.1'
 const port = 3000
-server.listen(port)
+console.log('3000')
+server.listen(port, hostname)
 server.on('error', onError)
 
 /* Event listener for HTTP server error event */
