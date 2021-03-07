@@ -14,7 +14,8 @@
     </div>
 
     <button @click="sendMessage">发送</button>
-    <div>收件箱</div>
+    <br />
+    <router-link to="/inbox">收件箱</router-link>
   </div>
 </template>
 

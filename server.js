@@ -135,6 +135,11 @@ imap.once('ready', () => {
             if (data.type === 'text') { // 邮件正文
               console.log('邮件内容信息>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
               console.log(`邮件内容 ${data.html}`)
+              app.get('/get/message', (req, res) => {
+                res.send(data.html)
+                console.log('msg', req)
+                console.log('msg', res)
+              })
             }
             if (data.type === 'attachment') { // 附件
               console.log('邮件附件信息>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
