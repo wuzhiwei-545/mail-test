@@ -7,9 +7,19 @@ const routes = [
     component: () => import('../views/Home')
   },
   {
-    path: '/inbox',
-    name: 'Inbox',
-    component: () => import(/* webpackChunkName: "inbox" */ '../views/Inbox')
+    path: '/detail/:seqno',
+    name: 'Detail',
+    component: () => import('@/views/Detail')
+  },
+  {
+    path: '/send',
+    name: 'Send',
+    component: () => import('@/views/SendMail')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/Login')
   }
 ]
 

@@ -13,6 +13,9 @@ instance.interceptors.request.use(config => {
   if (config.method === 'post' || config.method === 'put') {
     config.data = JSON.stringify(config.data)
   }
+  if (config.url.includes('upload')) {
+    config.headers['enctype'] = 'multipart/form-data'
+  }
   return config
 })
 

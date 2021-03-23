@@ -1,64 +1,92 @@
 <template>
   <div class="home">
-    <div class="form-item">
-      <label>收件人</label>
-      <input type="text" v-model="mailInfo.recipient" />
-    </div>
-    <div class="form-item">
-      <label>主题</label>
-      <input type="text" v-model="mailInfo.theme" />
-    </div>
-    <div class="form-item">
-      <label>正文</label>
-      <textarea id="" cols="30" rows="3" v-model="mailInfo.content"></textarea>
-    </div>
-
-    <button @click="sendMessage">发送</button>
-    <br />
-    <router-link to="/inbox">收件箱</router-link>
+    <ul class="mail-list">
+      <li v-for="item in list" :key="item.seqno" @click="onShowDetail(item.seqno)">
+        <div class="mail-img">{{item.iconTxt}}</div>
+        <div class="mail-msg">
+          <div class="mail-name-date">
+            <p>{{item.from}}</p>
+            <span>{{item.date}}</span>
+          </div>
+          <p>{{item.subject}}</p>
+          <a :href="item.fileUrl" target="_blank" v-if="item.fileUrl">{{item.filename}}</a>
+        </div>
+      </li>
+    </ul>
+    <van-icon name="add" size="50" color="#000" class="send-icon" @click="$router.push('/send')" />
   </div>
 </template>
 
 <script>
-import { reactive, toRaw } from 'vue'
-import { sendMsg } from '@/assets/api/home.js'
+import { reactive, toRefs, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 export default {
-  name: 'Home',
-  setup () {
-    let mailInfo = reactive({ 
-      recipient: '',
-      theme: '',
-      content: ''
+  setup() {
+    const router = useRouter()
+    const store = useStore()
+    const state = reactive({
+      list: []
+    })
+    onMounted(async () => {
+      await store.dispatch('setMailList')
+      state.list = store.state.mailList
     })
 
-    function sendMessage () {
-      const obj = toRaw(mailInfo)
-      sendMsg(obj).then(() => {
-        alert('成功')
-      })
+    function onShowDetail (seqno) {
+      router.push(`/detail/${seqno}`)
     }
     return {
-      mailInfo,
-      sendMessage
+      ...toRefs(state),
+      onShowDetail
     }
-  }
+  },
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
+<style>
+body, div, p, ul, li {
+  margin: 0;
   padding: 0;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.home .mail-list {
+  width: 100%;
 }
-a {
-  color: #42b983;
+.mail-list li {
+  width: 100%;
+  display: flex;
+}
+.mail-img {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  line-height: 100px;
+  text-align: center;
+  border-radius: 50px;
+  background-color: rgb(25, 137, 250);
+  color: #fff;
+}
+.mail-msg {
+  padding: 10px;
+  text-align: left;
+  flex: 1;
+  border-bottom: 1px solid #000;
+}
+.mail-msg p {
+  width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mail-name-date {
+  display: flex;
+  justify-content: space-between;
+}
+.send-icon {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  right: 20px;
+  bottom: 30px;
 }
 </style>
