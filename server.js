@@ -27,7 +27,7 @@ const smtpTransport = nodemailer.createTransport({
   secure: true,
   auth: {
     user: '389057465@qq.com',
-    pass: 'mdsblpxpjtkvbjde' // QQ邮箱需要使用授权码
+    pass: '' // QQ邮箱需要使用授权码
   }
 })
 
@@ -124,7 +124,7 @@ const fs = require('fs')
 
 const imap = new Imap({
   user: '389057465@qq.com',
-  password: 'mdsblpxpjtkvbjde',
+  password: '',
   host: 'imap.qq.com',
   port: 993,
   tls: true,
